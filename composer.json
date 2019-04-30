@@ -1,0 +1,21 @@
+{
+    "name": "edevelop/magic-spa-backend",
+    "description": "Template backend project for Magic SPA",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ilya Dashevsky",
+            "email": "il.dashevsky@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "7.2.*",
+        "edevelop/open-core": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "MagicSpa\\": "src/"
+        }
+    }
+}
