@@ -1,0 +1,23 @@
+[
+    {
+        "name":"user",
+        "extends":[],
+        "permissions":[
+            "user_panel"
+        ]
+    },
+    {
+        "name":"admin",
+        "extends":["user"],
+        "permissions":[
+            "admin_panel"
+        ]
+    },
+    {
+        "name":"banned_user",
+        "extends":[],
+        "permissions":[
+            "banned_msg"
+        ]
+    }
+]
