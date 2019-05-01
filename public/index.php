@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author Ilya Dashevsky <il.dashevsky@gmail.com>
+ * @license The MIT License (MIT), http://opensource.org/licenses/MIT
+ * @link https://github.com/edevelops/magic-spa-backend
+ */
+
 declare(strict_types = 1);
 
 use Psr\Container\ContainerInterface;
@@ -23,7 +29,6 @@ use OpenCore\Middlewares\CsrfProtection;
 use OpenCore\Middlewares\AuthMiddleware;
 use OpenCore\Middlewares\LocaleMiddleware;
 use MagicSpa\Services\DbLocator;
-use MagicSpa\Services\AuthManager;
 use OpenCore\Services\Injector;
 use OpenCore\Rest\RestError;
 
@@ -54,14 +59,14 @@ function main() {
         ContainerInterface::class => function()use(&$container) {
             return $container;
         },
-        DbLocator::class => create()->constructor(function() {
-                    return include APP_ROOT . '/config/db-config.php';
-                }, get(Injector::class), function() {
-                    return null;
-//            $dbLogger = new Logger('sql');
-//            $dbLogger->pushHandler(new StreamHandler(APP_ROOT.'/logs/sql.log', Logger::DEBUG));
-//            return $dbLogger;
-                }),
+//        DbLocator::class => create()->constructor(function() {
+//                    return include APP_ROOT . '/config/db-config.php';
+//                }, get(Injector::class), function() {
+////                    $dbLogger = new Logger('sql');
+////                    $dbLogger->pushHandler(new StreamHandler(APP_ROOT.'/logs/sql.log', Logger::DEBUG));
+////                    return $dbLogger;
+//                    return null;
+//                }),
         Logger::class => $mainLogger,
         'response' => function() {
             return new Response();
@@ -72,16 +77,16 @@ function main() {
     $container = $containerBuilder->build();
 
 
-    $writableMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
+//    $writableMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
 
     $ctrlContainerBuilder = new CtrlContainerBuilder();
     $ctrlContainerBuilder->useNamespace('MagicSpa\\Controllers');
     $ctrlContainerBuilder->useServicesContainer($container);
     $ctrlContainerBuilder->useLogger($mainLogger);
-    $ctrlContainerBuilder->useDbTransations($writableMethods, function($work)use($container) {
-        return $container->get(DbLocator::class)->transaction($work);
-    });
+//    $ctrlContainerBuilder->useDbTransations($writableMethods, function($work)use($container) {
+//        return $container->get(DbLocator::class)->transaction($work);
+//    });
     $ctrlContainer = $ctrlContainerBuilder->build();
 
 
@@ -109,16 +114,16 @@ function main() {
         }
     });
 
-    $middlewareQueue[] = new CsrfProtection($writableMethods, function()use($container) {
-        return $container->get(AuthManager::class)->getCsrfToken();
-    }, $mainLogger);
+//    $middlewareQueue[] = new CsrfProtection($writableMethods, function(){
+//        return 'none'; // take CSRF Token from your session manager (injected using $container)
+//    }, $mainLogger);
     $middlewareQueue[] = new FastRoute($routes);
-    $middlewareQueue[] = new AuthMiddleware($handlerPermissionsMap, function($permission)use($container) {
-        return $container->get(AuthManager::class)->hasPrivilege($permission);
-    }, $mainLogger);
-    $middlewareQueue[] = new LocaleMiddleware(function() {
-        return ['langs' => ['en', 'es', 'ru', 'cn'], 'defaultLang' => 'en', 'defaultLocale' => 'en-US'];
-    });
+//    $middlewareQueue[] = new AuthMiddleware($handlerPermissionsMap, function($permission) {
+//        return true; // check if $permission is available for current user
+//    }, $mainLogger);
+//    $middlewareQueue[] = new LocaleMiddleware(function() {
+//        return ['langs' => ['en', 'es', 'ru', 'cn'], 'defaultLang' => 'en', 'defaultLocale' => 'en-US'];
+//    });
     $middlewareQueue[] = new RequestHandler($ctrlContainer);
 
     /** @noinspection PhpUnhandledExceptionInspection */

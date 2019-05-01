@@ -1,32 +1,9 @@
 [
     {
-        "controller":"PingController",
+        "controller":"CronController",
         "routes":{
-            "ping":{
-                "GET":{"method":"doPing", "permission":null}
-            },
-            "pull":{
-                "GET":{"method":"doPull", "permission":"polling"}
-            }
-        }
-    },
-    {
-        "controller":"AuthController",
-        "routes":{
-            "auth/login":{
-                "POST":{"method":"doLogin", "permission":null}
-            },
-            "auth/logout":{
-                "POST":{"method":"doLogout", "permission":null}
-            },
-            "auth/register":{
-                "POST":{"method":"doRegister", "permission":null}
-            },
-            "auth/status":{
-                "GET":{"method":"getStatus", "permission":null}
-            },
-            "auth/roles":{
-                "GET":{"method":"getRoles", "permission":null}
+            "cron/{task:[0-9a-z-]{1,32}}":{
+                "GET":{"method":"runCron", "permission":null}
             }
         }
     }
